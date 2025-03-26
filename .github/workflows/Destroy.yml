@@ -1,0 +1,57 @@
+name: Destroy
+on:
+  workflow_dispatch:
+  
+jobs:
+  Destroy:
+    runs-on: ubuntu-latest
+    env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_NEW }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_NEW }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Get version
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18' # or 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Move Build Output to IAC Folder
+        run: |
+          mkdir -p ./IAC/build
+          mv ./build/* ./IAC/build/
+      
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.9
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NEW }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NEW }}
+          aws-region: us-east-1
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./IAC
+
+      - name: Validate Terraform
+        run: terraform validate
+        working-directory: ./IAC
+
+      - name: Apply Terraform
+        run: terraform destroy -auto-approve
+        working-directory: ./IAC
