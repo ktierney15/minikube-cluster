@@ -13,19 +13,16 @@ terraform {
 }
 
 ## PEM ##
-# Generate an SSH key pair in Terraform
 resource "tls_private_key" "minikube" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-# Upload the generated public key to AWS
 resource "aws_key_pair" "minikube_key" {
   key_name   = "minikube-key"
   public_key = tls_private_key.minikube.public_key_openssh
 }
 
-# Save the private key locally for SSH access
 resource "local_file" "private_key" {
   content  = tls_private_key.minikube.private_key_pem
   filename = "${path.module}/minikube-key.pem"
