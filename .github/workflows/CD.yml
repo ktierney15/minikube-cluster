@@ -60,3 +60,10 @@ jobs:
       - name: Apply Terraform
         run: terraform apply -auto-approve plan.tfplan
         working-directory: ./IAC
+
+      - name: Upload SSH Private Key as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: minikube-key
+          path: ./IAC/minikube-key.pem
+          retention-days: 1
