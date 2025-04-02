@@ -57,7 +57,7 @@ resource "aws_security_group" "minikube_sg" {
 
 resource "aws_instance" "minikube" {
   ami           = "ami-028f6d7ddc3079baf" # ubuntu 22.04
-  instance_type = "t3.micro"
+  instance_type = "t3.small" # minimum size minikube allows
   key_name      = aws_key_pair.minikube_key.key_name
   security_groups = [aws_security_group.minikube_sg.name]
 
@@ -68,20 +68,34 @@ resource "aws_instance" "minikube" {
 
   user_data = <<-EOF
     #!/bin/bash
-    # Update package list and install necessary packages
+    # Update package list
     sudo apt update -y
+
+    # Install Docker and conntrack
     sudo apt install -y docker.io conntrack
 
-    # Enable and start Docker
+    # Start and enable Docker service
     sudo systemctl enable --now docker
+
+    # Verify Docker installation
+    docker --version
 
     # Download and install Minikube
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
+    # Install crictl
+    curl -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz
+    tar -zxvf crictl-v1.24.0-linux-amd64.tar.gz
+    sudo mv crictl /usr/local/bin/
+
     # Start Minikube with the 'none' driver
     sudo minikube start --driver=none
+
+    # Verify Minikube installation
+    minikube version
   EOF
+
 
   tags = {
     Name = "Minikube-Instance"
