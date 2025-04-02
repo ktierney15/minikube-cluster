@@ -11,26 +11,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Get version
-        id: version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18' # or 18
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build React App
-        run: npm run build
-
-      - name: Move Build Output to IAC Folder
-        run: |
-          mkdir -p ./IAC/build
-          mv ./build/* ./IAC/build/
       
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -46,10 +26,6 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./IAC
-
-      - name: Validate Terraform
-        run: terraform validate
         working-directory: ./IAC
 
       - name: Apply Terraform
