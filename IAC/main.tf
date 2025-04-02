@@ -66,35 +66,7 @@ resource "aws_instance" "minikube" {
     volume_type = "gp3"
   }
 
-  user_data = <<-EOF
-    #!/bin/bash
-    # Update package list
-    sudo apt update -y
-
-    # Install Docker and conntrack
-    sudo apt install -y docker.io conntrack
-
-    # Start and enable Docker service
-    sudo systemctl enable --now docker
-
-    # Verify Docker installation
-    docker --version
-
-    # Download and install Minikube
-    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-    # Install crictl
-    curl -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz
-    tar -zxvf crictl-v1.24.0-linux-amd64.tar.gz
-    sudo mv crictl /usr/local/bin/
-
-    # Start Minikube with the 'none' driver
-    sudo minikube start --driver=none
-
-    # Verify Minikube installation
-    minikube version
-  EOF
+  user_data = file("user_data.sh")
 
 
   tags = {
