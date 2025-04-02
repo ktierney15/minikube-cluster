@@ -82,4 +82,3 @@ resource "aws_instance" "minikube" {
 }
 
 
-
