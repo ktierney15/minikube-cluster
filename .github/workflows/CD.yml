@@ -9,15 +9,15 @@ jobs:
       - uses: actions/checkout@v3
 
       # Check if you are executing from a branch and exit if so ## MUST EXECUTE FROM TAG ##
-      - name: Get branch or tag name
-        run: echo "REF_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/')" >> $GITHUB_ENV
+      # - name: Get branch or tag name
+      #   run: echo "REF_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/')" >> $GITHUB_ENV
 
-      - name: Check if it's a tag
-        run: |
-          if [[ -z "${REF_NAME}" ]]; then
-            echo "This is not a tag. Exiting..."
-            exit 1
-          fi
+      # - name: Check if it's a tag
+      #   run: |
+      #     if [[ -z "${REF_NAME}" ]]; then
+      #       echo "This is not a tag. Exiting..."
+      #       exit 1
+      #     fi
 
   Deploy:
     needs: Pre-Check
