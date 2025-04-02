@@ -68,11 +68,18 @@ resource "aws_instance" "minikube" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo yum update -y
-    sudo yum install -y docker
+    # Update package list and install necessary packages
+    sudo apt update -y
+    sudo apt install -y docker.io conntrack
+
+    # Enable and start Docker
     sudo systemctl enable --now docker
+
+    # Download and install Minikube
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+    # Start Minikube with the 'none' driver
     sudo minikube start --driver=none
   EOF
 
