@@ -54,7 +54,7 @@ jobs:
         working-directory: ./IAC
 
       - name: Plan Terraform
-        run: terraform plan -out=plan.tfplan
+        run: terraform plan -out=plan.tfplan -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var="ingress_ip=${{ secrets.INGRESS_IP }}"
         working-directory: ./IAC
 
       - name: Apply Terraform

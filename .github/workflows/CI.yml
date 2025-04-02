@@ -36,7 +36,7 @@ jobs:
         working-directory: ./IAC
 
       - name: Plan Terraform
-        run: terraform plan -out=plan.tfplan
+        run: terraform plan -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var="ingress_ip=${{ secrets.INGRESS_IP }}"
         working-directory: ./IAC
       
 
@@ -80,8 +80,8 @@ jobs:
       - name: Semantic Versioning
         run: echo "updated_tag=$(python3 .github/scripts/sem-ver.py ${{ env.version_increment_type }} ${{ steps.get-latest-tag.outputs.TAG }})" >> $GITHUB_ENV
 
-      - name: Tag new version
-        run: |
-          git tag ${{ env.updated_tag }}
-          git push origin --tags
+      # - name: Tag new version
+      #   run: |
+      #     git tag ${{ env.updated_tag }}
+      #     git push origin --tags
           
