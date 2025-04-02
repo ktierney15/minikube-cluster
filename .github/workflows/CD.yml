@@ -62,7 +62,7 @@ jobs:
         working-directory: ./IAC
 
       - name: Upload SSH Private Key as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: minikube-key
           path: ./IAC/minikube-key.pem
