@@ -53,5 +53,5 @@ jobs:
         working-directory: ./IAC
 
       - name: Apply Terraform
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var="ingress_ip=${{ secrets.INGRESS_IP }}"
         working-directory: ./IAC
