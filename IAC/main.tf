@@ -66,7 +66,7 @@ resource "aws_instance" "minikube" {
     volume_type = "gp3"
   }
 
-  user_data = file("user_data.sh")
+  user_data = file("cloud-init/user_data.sh")
 
 
   tags = {
