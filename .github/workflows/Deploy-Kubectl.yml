@@ -1,0 +1,32 @@
+name: Deploy Kubectl configuration to Minikube Cluster
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        working-directory: ./deployments/kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.21.0'
+
+      - name: Set kubeconfig
+        working-directory: ./deployments/kubectl
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Verify kubectl setup
+        working-directory: ./deployments/kubectl
+        run: kubectl cluster-info
+
+      - name: Deploy to Kubernetes
+        working-directory: ./deployments/kubectl
+        run: |
+          kubectl apply -f deployment.yml

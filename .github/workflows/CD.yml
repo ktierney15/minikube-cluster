@@ -1,4 +1,4 @@
-name: CD 
+name: Deploy Minikube Cluster
 on:
   workflow_dispatch:
   

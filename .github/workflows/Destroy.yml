@@ -1,4 +1,4 @@
-name: Destroy
+name: Destroy Minikube Cluster
 on:
   workflow_dispatch:
   
