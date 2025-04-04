@@ -1,40 +1,58 @@
 #!/bin/bash
-set -euxo pipefail  # Enable strict error handling
 
-# Prevent interactive prompts
-export DEBIAN_FRONTEND=noninteractive
+# Log user-data execution
+exec > /var/log/user-data.log 2>&1
+set -euxo pipefail
 
 # Update system packages
-sudo apt update -y
-sudo apt upgrade -y
+apt update -y && apt upgrade -y
 
-# Install required dependencies without prompts
-sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release conntrack socat
+# Install dependencies
+apt install -y docker.io jq conntrack
 
-# Install Docker
-sudo apt remove -y docker docker-engine docker.io containerd runc || true
-sudo apt install -y docker.io
-sudo systemctl enable --now docker
+# Start and enable Docker
+systemctl enable --now docker
 
-# Add user to the docker group
-sudo usermod -aG docker ubuntu
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+mv kubectl /usr/local/bin/
 
 # Install Minikube
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-rm minikube-linux-amd64
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+mv minikube /usr/local/bin/
 
-# Install cri-dockerd (needed for Kubernetes 1.24+ with Docker runtime)
-sudo apt install -y git golang-go
-git clone https://github.com/Mirantis/cri-dockerd.git /home/ubuntu/cri-dockerd
-cd /home/ubuntu/cri-dockerd
-mkdir -p bin
-go build -o bin/cri-dockerd
-sudo install -o root -g root -m 0755 bin/cri-dockerd /usr/local/bin/cri-dockerd
-sudo cp -r packaging/systemd/* /etc/systemd/system
-sudo systemctl daemon-reload
-sudo systemctl enable --now cri-docker.service cri-docker.socket
+# Allow non-root users to run Minikube (optional)
+usermod -aG docker ubuntu
 
-# Start Minikube with Docker driver
-sudo -u ubuntu minikube start --driver=docker --memory=1800mb --force
+# Start Minikube (as ubuntu user)
+runuser -l ubuntu -c "minikube start --driver=docker"
 
+# Configure kubectl for ubuntu user
+runuser -l ubuntu -c "mkdir -p \$HOME/.kube && minikube kubectl -- get pods"
+
+# Create a systemd service for Minikube to make it persistent
+cat <<EOF > /etc/systemd/system/minikube.service
+[Unit]
+Description=Minikube Cluster
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=ubuntu
+ExecStart=/usr/local/bin/minikube start --driver=docker
+ExecStop=/usr/local/bin/minikube stop
+Restart=always
+Environment="HOME=/home/ubuntu"
+WorkingDirectory=/home/ubuntu
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start the Minikube service
+systemctl enable --now minikube
+
+# Print status
+echo "Minikube has been installed and started successfully!"
