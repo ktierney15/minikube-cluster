@@ -16,18 +16,12 @@ jobs:
         with:
           version: 'v1.21.0'
 
-      - name: Set kubeconfig
-        working-directory: ./deployments/kubectl
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-
-      - name: Verify kubectl setup
-        working-directory: ./deployments/kubectl
-        run: kubectl cluster-info
-
       - name: Deploy to Kubernetes
         working-directory: ./deployments/kubectl
         run: |
-          kubectl apply -f deployment.yml
+          kubectl config set-credentials $(kubectl config current-context) --username=$(kubectl config current-context) --password=$(echo "${{ secrets.KUBECONFIG }}" | base64 -d | kubectl config get-credentials $(kubectl config current-context) -o json | jq -r .token)
+          kubectl config set-context $(kubectl config current-context) --cluster=$(kubectl config current-context) --user=$(kubectl config current-context)
+          kubectl config use-context $(kubectl config current-context)
+          kubectl apply -f ./deployment.yml
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
