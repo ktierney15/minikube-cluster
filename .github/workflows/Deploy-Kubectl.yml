@@ -1,4 +1,4 @@
-name: Deploy Kubectl configuration to Minikube Cluster
+name: Deploy Kubectl configuration
 
 on:
   workflow_dispatch:
@@ -19,7 +19,9 @@ jobs:
       - name: Set kubeconfig
         working-directory: ./deployments/kubectl
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
 
       - name: Verify kubectl setup
         working-directory: ./deployments/kubectl
