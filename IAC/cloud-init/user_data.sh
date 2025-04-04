@@ -26,33 +26,14 @@ mv minikube /usr/local/bin/
 # Allow non-root users to run Minikube (optional)
 usermod -aG docker ubuntu
 
-# Start Minikube (as ubuntu user)
+# Small sleep to ensure Docker is fully ready
+sleep 10
+
+# Start Minikube as ubuntu user
 runuser -l ubuntu -c "minikube start --driver=docker"
 
 # Configure kubectl for ubuntu user
 runuser -l ubuntu -c "mkdir -p \$HOME/.kube && minikube kubectl -- get pods"
-
-# Create a systemd service for Minikube to make it persistent
-cat <<EOF > /etc/systemd/system/minikube.service
-[Unit]
-Description=Minikube Cluster
-After=docker.service
-Requires=docker.service
-
-[Service]
-User=ubuntu
-ExecStart=/usr/local/bin/minikube start --driver=docker
-ExecStop=/usr/local/bin/minikube stop
-Restart=always
-Environment="HOME=/home/ubuntu"
-WorkingDirectory=/home/ubuntu
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Enable and start the Minikube service
-systemctl enable --now minikube
 
 # Print status
 echo "Minikube has been installed and started successfully!"
