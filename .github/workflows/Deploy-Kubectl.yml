@@ -24,4 +24,4 @@ jobs:
 
       - name: Deploy to Kubernetes
         working-directory: ./deployments/kubectl
-        run: kubectl deploy -f ./deployment.yml
+        run: kubectl apply -f ./deployment.yml
