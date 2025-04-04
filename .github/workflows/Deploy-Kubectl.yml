@@ -12,7 +12,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up kubectl
-        working-directory: ./deployments/kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'v1.21.0'
