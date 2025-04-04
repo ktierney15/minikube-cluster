@@ -14,14 +14,14 @@ jobs:
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: 'v1.21.0'
+          version: 'v1.28.0'
+      
+      - name: Configure Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
 
       - name: Deploy to Kubernetes
         working-directory: ./deployments/kubectl
-        run: |
-          kubectl config set-credentials $(kubectl config current-context) --username=$(kubectl config current-context) --password=$(echo "${{ secrets.KUBECONFIG }}" | base64 -d | kubectl config get-credentials $(kubectl config current-context) -o json | jq -r .token)
-          kubectl config set-context $(kubectl config current-context) --cluster=$(kubectl config current-context) --user=$(kubectl config current-context)
-          kubectl config use-context $(kubectl config current-context)
-          kubectl apply -f ./deployment.yml
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: ubectl deploy -f ./deployment.yml
