@@ -55,7 +55,6 @@ systemctl enable minikube-start
 # Print status
 echo "Minikube has been installed, and the startup service has been configured!"
 
-runuser -l ubuntu -c "minikube start --driver=docker"
 
 # #!/bin/bash
 
