@@ -1,4 +1,4 @@
-# #!/bin/bash
+#!/bin/bash
 
 # Log user-data execution
 exec > /var/log/user-data.log 2>&1
