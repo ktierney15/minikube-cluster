@@ -1,8 +1,8 @@
 # minikube-cluster
-This repository is for messing around with kubernetes deployments and configurations
+Development Minikube cluster to test out K8s deployment configurations
 
 ## Components
 - [IAC](IAC/README.md): Terraform configuration for minikube ec2 instance
-- deployments: example deployments to the cluster 
+- example-deployments: example deployments to the cluster 
     - [kubectl](deployments/kubectl/README.md)
 - .github/workflows: CI/CD pipelines
