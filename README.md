@@ -5,4 +5,6 @@ Development Minikube cluster to test out K8s deployment configurations
 - [IAC](IAC/README.md): Terraform configuration for minikube ec2 instance
 - example-deployments: example deployments to the cluster 
     - [kubectl](deployments/kubectl/README.md)
+    - [helm](deployments/helm/README.md)
+    - [kustomize](deployments/kustomize/README.md)
 - .github/workflows: CI/CD pipelines

@@ -80,8 +80,8 @@ jobs:
       - name: Semantic Versioning
         run: echo "updated_tag=$(python3 .github/scripts/sem-ver.py ${{ env.version_increment_type }} ${{ steps.get-latest-tag.outputs.TAG }})" >> $GITHUB_ENV
 
-      # - name: Tag new version
-      #   run: |
-      #     git tag ${{ env.updated_tag }}
-      #     git push origin --tags
+      - name: Tag new version
+        run: |
+          git tag ${{ env.updated_tag }}
+          git push origin --tags
           
