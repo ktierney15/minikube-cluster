@@ -10,6 +10,5 @@ minikube start --driver=docker; minikube start --driver=docker```
 ## Architecture
 The terraform configuration will create the following resources:
 - EC2 instance to host the minikube service
-    - The EC2 will use the user data script to install the needed resources
 - SSH key to connect to the instance
 - security group to allow the proper networking for the instance (only allowing connection from my IP)
