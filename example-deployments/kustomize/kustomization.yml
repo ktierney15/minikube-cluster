@@ -1,0 +1,5 @@
+resources:
+  - ./nginx-deployment.yml
+  - ./nginx-service.yml
+
+namePrefix: nginx-
