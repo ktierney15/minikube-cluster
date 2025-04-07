@@ -3,7 +3,8 @@
 ## Setup steps
 1. Run the Deploy Minikube pipeline
 2. ssh into the EC2 instance with the SSH key that gets created by the pipeline  
-    - if needed, run: minikube start --driver=docker
+    - if needed, run: ```sudo -i -u ubuntu bash
+minikube start --driver=docker; minikube start --driver=docker```
 3. copy over your deployment scripts into the instance and deploy
 
 ## Architecture
