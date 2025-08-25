@@ -41,6 +41,13 @@ resource "aws_security_group" "minikube_sg" {
   }
 
   ingress {
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_blocks = [var.ingress_ip]
+  }
+
+  ingress {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
