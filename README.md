@@ -8,3 +8,4 @@ Development Minikube cluster to test out K8s deployment configurations
     - [helm](example-deployments/helm/README.md)
     - [kustomize](example-deployments/kustomize/README.md)
 - .github/workflows: CI/CD pipelines
+- my-deployments: my personal deployments to the cluster
