@@ -10,8 +10,8 @@ if [[ -z "$EC2_HOST" ]]; then
   exit 1
 fi
 
-read -p "Enter path to your PEM key (default: ~/.ssh/id_rsa.pem): " EC2_KEY_PATH
-EC2_KEY_PATH=${EC2_KEY_PATH:-$HOME/.ssh/id_rsa.pem}
+read -p "Enter path to your PEM key (default: minikube-key.pem): " EC2_KEY_PATH
+EC2_KEY_PATH=${EC2_KEY_PATH:-minikube-key.pem}
 
 read -p "Enter local path to store kubeconfig (default: ~/.kube/config-ec2-minikube): " LOCAL_KUBECONFIG_EC2
 LOCAL_KUBECONFIG_EC2=${LOCAL_KUBECONFIG_EC2:-$HOME/.kube/config-ec2-minikube}
